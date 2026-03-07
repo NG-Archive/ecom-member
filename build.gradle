@@ -1,0 +1,112 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.11'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+group = 'site.ng-archive'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	asciidoctorExtensions
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+// Asciidoctor 스니핏 경로 지정
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+// asciidoc 문서 파일 이동
+tasks.register('copyDocumentToSrc', Copy) {
+	doFirst {
+		def indexFile = file('build/docs/asciidoc/index.html')
+		def scriptFile = file('src/main/resources/js/addAsccidocScript.js')
+		def content = indexFile.text
+		def scriptContent = scriptFile.text
+		indexFile.text = content +
+		"""
+		<script>
+		${scriptContent}
+		</script>
+		"""
+	}
+
+	from file("build/docs/asciidoc/index.html")
+	into file("src/main/resources/static/docs/")
+}
+
+// asciidoc 문서 파일 이동
+tasks.register('copyDocumentToResources', Copy) {
+	from file("build/docs/asciidoc/index.html")
+	into file("build/resources/main/static/docs/")
+}
+
+// Asciidoctor Extension 설정
+asciidoctor {
+	configurations "asciidoctorExtensions"
+	inputs.dir snippetsDir
+	dependsOn test
+
+	finalizedBy copyDocumentToSrc,copyDocumentToResources
+}
+
+resolveMainClassName {
+	dependsOn 'copyDocumentToResources'
+}
+
+test {
+	useJUnitPlatform()
+	outputs.dir snippetsDir
+	finalizedBy asciidoctor
+}
+
+build {
+	dependsOn asciidoctor
+}
+
+bootJar{
+	dependsOn asciidoctor
+}
+
+jar {
+	enabled = false
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.flywaydb:flyway-mysql'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testRuntimeOnly 'io.r2dbc:r2dbc-h2'
+	testImplementation 'io.rest-assured:rest-assured'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+	testImplementation 'io.rest-assured:spring-web-test-client'
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+//	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+
+//	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+//	testImplementation("io.rest-assured:spring-mock-mvc")
+}

@@ -1,0 +1,43 @@
+ifndef::snippets[]
+:basedir: {docdir}/../../../
+:snippets: build/generated-snippets
+:sources-root: {basedir}/src
+:resources: {sources-root}/main/resources
+:resources-test: {sources-root}/test/resources
+:java: {sources-root}/main/java
+:java-test: {sources-root}/test/java
+endif::[]
+
+= ecom member API Document
+ecom
+:doctype: book
+:icons: font
+:source-highlighter: highlight.js
+:toc: left
+:sectnums:
+:toclevels: 1
+:sectlinks:
+:docinfodir: .asciidoctor
+:docinfo: shared
+
+[[overview]]
+= Overview
+회원 서비스의 API 리스트
+
+***
+
+[[api]]
+= API List
+
+[[api_member]]
+== *member*
+NOTE: 회원 단건 조회 API
+
+:sourcedir: member-controller-test
+
+==== *polling*
+url : `/member/{id}`  +
+method : `GET`  +
+
+:methoddir: read-member
+operation::{sourcedir}/{methoddir}/[snippets='path-parameters,http-request,http-response,curl-request']
