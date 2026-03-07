@@ -84,7 +84,7 @@ reviews:
       enabled: false # JS/TS 도구 비활성화
     hadolint:
       enabled: true
-    checkstyle: # Java용 도구 추가 (지원 시)
+    pmd:
       enabled: true
     gitleaks:
       enabled: true
