@@ -2,7 +2,7 @@ package site.ng_archive.ecom_member.domain;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import site.ng_archive.ecom_member.AcceptedTest;
+import site.ng_archive.ecom_member.config.AcceptedTest;
 
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;

@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member;
+package site.ng_archive.ecom_member.config;
 
 
 import org.springframework.beans.factory.annotation.Value;
