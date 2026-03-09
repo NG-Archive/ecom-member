@@ -19,6 +19,8 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.function.Consumer;
+import com.epages.restdocs.apispec.WebTestClientRestDocumentationWrapper;
+
 
 
 @Import(RestDocsConfig.class)
@@ -52,7 +54,7 @@ public abstract class AcceptedTest {
     }
 
     protected Consumer<EntityExchangeResult<byte[]>> document(Snippet... snippets) {
-        return WebTestClientRestDocumentation.document(
+        return WebTestClientRestDocumentationWrapper.document(
                 "{class-name}/{method-name}",
                 restDocsConfig.getRequestPreprocessor(),
                 restDocsConfig.getResponsePreprocessor(),

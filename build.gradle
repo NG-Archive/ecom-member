@@ -2,12 +2,12 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.11'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id 'com.epages.restdocs-api-spec' version '0.17.1'
 }
 
 group = 'site.ng-archive'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+description = 'ecom member api service'
 
 java {
 	toolchain {
@@ -15,10 +15,19 @@ java {
 	}
 }
 
-configurations {
-	asciidoctorExtensions
-	compileOnly {
-		extendsFrom annotationProcessor
+openapi3 {
+	server = 'http://localhost:8080'
+	title = 'My Webflux API'
+	description = '테스트 코드로 자동 생성된 Swagger 문서'
+	version = '1.0.0'
+	format = 'yaml'
+
+	copy {
+		from "build/api-spec/openapi3.yaml"
+		into "src/main/resources/static"
+		rename { String fileName ->
+			fileName.replace("openapi3.yaml", "apispec.yaml")
+		}
 	}
 }
 
@@ -26,66 +35,13 @@ repositories {
 	mavenCentral()
 }
 
-// Asciidoctor 스니핏 경로 지정
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
-}
-
-// asciidoc 문서 파일 이동
-tasks.register('copyDocumentToSrc', Copy) {
-	doFirst {
-		def indexFile = file('build/docs/asciidoc/index.html')
-		def scriptFile = file('src/main/resources/js/addAsccidocScript.js')
-		def content = indexFile.text
-		def scriptContent = scriptFile.text
-		indexFile.text = content +
-		"""
-		<script>
-		${scriptContent}
-		</script>
-		"""
-	}
-
-	from file("build/docs/asciidoc/index.html")
-	into file("src/main/resources/static/docs/")
-}
-
-// asciidoc 문서 파일 이동
-tasks.register('copyDocumentToResources', Copy) {
-	from file("build/docs/asciidoc/index.html")
-	into file("build/resources/main/static/docs/")
-}
-
-// Asciidoctor Extension 설정
-asciidoctor {
-	configurations "asciidoctorExtensions"
-	inputs.dir snippetsDir
-	dependsOn test
-
-	finalizedBy copyDocumentToSrc,copyDocumentToResources
-}
-
-resolveMainClassName {
-	dependsOn 'copyDocumentToResources'
-}
-
 test {
 	useJUnitPlatform()
-	outputs.dir snippetsDir
-	finalizedBy asciidoctor
+	finalizedBy 'openapi3'
 }
 
-build {
-	dependsOn asciidoctor
-}
-
-bootJar{
-	dependsOn asciidoctor
-}
-
-jar {
-	enabled = false
-}
+build.dependsOn 'openapi3'
+bootJar.dependsOn 'openapi3'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -94,7 +50,9 @@ dependencies {
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-mysql'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0'
 	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'io.r2dbc:r2dbc-h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -104,9 +62,7 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
 	testImplementation 'io.rest-assured:spring-web-test-client'
-	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-//	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-
-//	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-//	testImplementation("io.rest-assured:spring-mock-mvc")
+	testImplementation 'com.epages:restdocs-api-spec:0.17.1'
+	testImplementation 'com.epages:restdocs-api-spec-webtestclient:0.17.1'
 }
+
