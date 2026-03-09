@@ -20,13 +20,15 @@ openapi3 {
 	description = 'ecom 서비스의 회원 API 문서'
 	version = '1.0.0'
 	format = 'yaml'
+}
 
-	copy {
-		from "build/api-spec/openapi3.yaml"
-		into "src/main/resources/static"
-		rename { String fileName ->
-			fileName.replace("openapi3.yaml", "apispec.yaml")
-		}
+tasks.register('copyOpenApiSpec', Copy) {
+	dependsOn 'openapi3'
+
+	from "build/api-spec/openapi3.yaml"
+	into "src/main/resources/static"
+	rename { String fileName ->
+		fileName.replace("openapi3.yaml", "apispec.yaml")
 	}
 }
 
@@ -42,6 +44,12 @@ test {
 build.dependsOn 'openapi3'
 bootJar.dependsOn 'openapi3'
 
+afterEvaluate {
+	tasks.named('openapi3') {
+		finalizedBy 'copyOpenApiSpec'
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
@@ -49,7 +57,7 @@ dependencies {
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-mysql'
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.0'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'io.r2dbc:r2dbc-h2'
 	annotationProcessor 'org.projectlombok:lombok'
