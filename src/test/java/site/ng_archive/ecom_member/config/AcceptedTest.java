@@ -1,5 +1,8 @@
 package site.ng_archive.ecom_member.config;
 
+import com.epages.restdocs.apispec.ResourceDocumentation;
+import com.epages.restdocs.apispec.ResourceSnippet;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import io.restassured.RestAssured;
 import io.restassured.module.webtestclient.RestAssuredWebTestClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +47,6 @@ public abstract class AcceptedTest {
 
     @BeforeEach
     void setUp(ApplicationContext applicationContext, RestDocumentationContextProvider provider) {
-
         this.webTestClient = this.webTestClient.mutate()
                 .filter(WebTestClientRestDocumentation.documentationConfiguration(provider))
                 .build();
@@ -53,12 +55,34 @@ public abstract class AcceptedTest {
         RestAssuredWebTestClient.webTestClient(webTestClient);
     }
 
-    protected Consumer<EntityExchangeResult<byte[]>> document(Snippet... snippets) {
+    protected Consumer<EntityExchangeResult<byte[]>> document(
+            String tag,
+            String summary,
+            String description,
+            Snippet... snippets) {
         return WebTestClientRestDocumentationWrapper.document(
                 "{class-name}/{method-name}",
                 restDocsConfig.getRequestPreprocessor(),
                 restDocsConfig.getResponsePreprocessor(),
-                snippets
+                mergeSnippets(snippets, getResource(tag, summary, description))
         );
     }
+
+    private static ResourceSnippet getResource(String tag, String summary, String description) {
+        return ResourceDocumentation.resource(
+                ResourceSnippetParameters.builder()
+                        .tag(tag)
+                        .summary(summary)
+                        .description(description)
+                        .build()
+        );
+    }
+
+    private static Snippet[] mergeSnippets(Snippet[] snippets, ResourceSnippet resourceSnippet) {
+        Snippet[] allSnippets = new Snippet[snippets.length + 1];
+        allSnippets[0] = resourceSnippet;
+        System.arraycopy(snippets, 0, allSnippets, 1, snippets.length);
+        return allSnippets;
+    }
+
 }
