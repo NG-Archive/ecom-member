@@ -1,14 +1,29 @@
 package site.ng_archive.ecom_member.domain;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
+@RequiredArgsConstructor
 @RestController
 public class MemberController {
 
+    private final MemberService memberService;
+
     @RequestMapping("/member/{id}")
     public void readMember(@PathVariable Long id) {
+    }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/member")
+    public Mono<CreateMemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
+        return memberService.createMember(request.toMember());
     }
 }

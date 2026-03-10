@@ -39,6 +39,9 @@ repositories {
 test {
 	useJUnitPlatform()
 	finalizedBy 'openapi3'
+
+	jvmArgs "-XX:+EnableDynamicAgentLoading"
+	jvmArgs "-Xshare:off"
 }
 
 build.dependsOn 'openapi3'
@@ -54,10 +57,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
-	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-mysql'
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.16'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'io.r2dbc:r2dbc-h2'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -66,6 +68,7 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testRuntimeOnly 'io.r2dbc:r2dbc-h2'
+	testRuntimeOnly 'com.h2database:h2'
 	testImplementation 'io.rest-assured:rest-assured'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
 	testImplementation 'io.rest-assured:spring-web-test-client'
