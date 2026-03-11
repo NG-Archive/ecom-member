@@ -166,7 +166,7 @@ class MemberControllerTest extends AcceptedTest {
                 .status(HttpStatus.BAD_REQUEST)
                 .extract().body().as(ErrorResponse.class);
 
-        Assertions.assertThat(response.errorCode()).isEqualTo("input.error.password");
+        Assertions.assertThat(response.errorCode()).isEqualTo("member.password.size");
         Assertions.assertThat(response.message()).isEqualTo("비밀번호는 4자 이상 20자 이하여야 합니다.");
 
     }
