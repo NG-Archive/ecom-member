@@ -24,17 +24,15 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleWebExchangeBindException(WebExchangeBindException ex) {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         if (fieldErrors.isEmpty()) {
-            return errorMessageUtil.getErrorResult("input.error.unknown", "입력값 오류가 발생했습니다.");
+            String errorCode = "error.input.unknown";
+            return errorMessageUtil.getErrorResult(errorCode, errorMessageUtil.getErrorMessage(errorCode));
         }
         FieldError error = fieldErrors.getFirst();
 
-        String code = "input.error." + error.getField();
-        String message = error.getDefaultMessage();
+        String code = error.getDefaultMessage();
+        String message = errorMessageUtil.getErrorMessage(code, error.getArguments());
 
-        return errorMessageUtil.getErrorResult(
-                code,
-                message
-        );
+        return errorMessageUtil.getErrorResult(code, message);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -42,26 +40,22 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex) {
         String errorCode = errorMessageUtil.getErrorCode(ex);
         String errorMessage = errorMessageUtil.getErrorMessage(errorCode);
-        return errorMessageUtil.getErrorResult(
-                errorCode,
-                errorMessage
-        );
+        return errorMessageUtil.getErrorResult(errorCode, errorMessage);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public ErrorResponse handleRuntimeException(RuntimeException ex) {
         log.error("handleRuntimeException: ", ex);
-        return new ErrorResponse("runtime.error", "실행 중 오류가 발생했습니다.");
+        String errorCode = "error.runtime";
+        return new ErrorResponse(errorCode, errorMessageUtil.getErrorMessage(errorCode));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGeneralException(Exception ex) {
         log.error("handleGeneralException: ", ex);
-        return new ErrorResponse(
-                "internal.server.error",
-                "서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
-        );
+        String errorCode = "error.internal.server";
+        return new ErrorResponse(errorCode, errorMessageUtil.getErrorMessage(errorCode));
     }
 }
