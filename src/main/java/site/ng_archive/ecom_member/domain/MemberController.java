@@ -3,6 +3,7 @@ package site.ng_archive.ecom_member.domain;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @RequestMapping("/member/{id}")
+    @GetMapping("/member/{id}")
     public Mono<ReadMemberResponse> readMember(@PathVariable Long id) {
         return memberService.readMember(id);
     }
