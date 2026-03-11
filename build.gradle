@@ -75,5 +75,6 @@ dependencies {
 	testImplementation 'io.rest-assured:spring-web-test-client'
 	testImplementation 'com.epages:restdocs-api-spec:0.17.1'
 	testImplementation 'com.epages:restdocs-api-spec-webtestclient:0.17.1'
+	testImplementation 'net.datafaker:datafaker:2.4.0'
 }
 

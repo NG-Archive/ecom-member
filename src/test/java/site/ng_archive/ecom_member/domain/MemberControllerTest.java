@@ -22,22 +22,74 @@ class MemberControllerTest extends AcceptedTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private MemberTestTemplate memberTestTemplate;
+
     @Test
     void 회원단건조회() {
-        given()
-            .contentType(ContentType.JSON)
-            .consumeWith(document(
-                "Member",
-                "회원 상세 조회",
-                "회원 ID를 사용하여 상세 정보를 조회합니다.",
-                pathParameters(
-                    parameterWithName("id").description("회원 아이디")
-                )
-            ))
-            .get("member/{id}", "1")
-        .then()
-            .status(HttpStatus.OK)
-        ;
+
+        Long existId = memberTestTemplate.createMember();
+
+        ReadMemberResponse response =
+            given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", 1L)
+                .consumeWith(document(
+                    "Member",
+                    "회원 상세 조회",
+                    "회원 ID를 사용하여 상세 정보를 조회합니다.",
+                    pathParameters(
+                        parameterWithName("id").description("회원 아이디")
+                    ),
+                    responseFields(
+                        fieldWithPath("id")
+                            .description("회원 ID")
+                            .type(JsonFieldType.NUMBER),
+                        fieldWithPath("name")
+                            .description("회원 이름")
+                            .type(JsonFieldType.STRING)
+                    )
+                ))
+                .get("member/{id}")
+            .then()
+                .status(HttpStatus.OK)
+                .log().all()
+                .extract().body().as(ReadMemberResponse.class);
+
+        Assertions.assertThat(existId).isEqualTo(response.id());
+    }
+
+    @Test
+    void 회원단건조회_미존재회원오류() {
+
+        ErrorResponse response =
+            given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", -1L)
+                .consumeWith(document(
+                    "Member",
+                    "회원 상세 조회",
+                    "회원 ID를 사용하여 상세 정보를 조회합니다.",
+                    pathParameters(
+                        parameterWithName("id").description("회원 아이디")
+                    ),
+                    responseFields(
+                        fieldWithPath("errorCode")
+                            .description("오류 코드")
+                            .type(JsonFieldType.STRING),
+                        fieldWithPath("message")
+                            .description("오류 메시지")
+                            .type(JsonFieldType.STRING)
+                    )
+                ))
+                .get("member/{id}")
+            .then()
+                .status(HttpStatus.NOT_FOUND)
+                .log().all()
+                .extract().body().as(ErrorResponse.class);
+
+        Assertions.assertThat(response.errorCode()).isEqualTo("member.notfound");
+        Assertions.assertThat(response.message()).isEqualTo("회원이 존재하지 않습니다.");
     }
 
     @Test

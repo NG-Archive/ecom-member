@@ -1,6 +1,7 @@
 package site.ng_archive.ecom_member.config;
 
 
+import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.restdocs.snippet.Attributes.Attribute;
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
@@ -45,6 +47,11 @@ public class RestDocsConfig {
                 getRequestPreprocessor(),
                 getResponsePreprocessor()
         );
+    }
+
+    @Bean
+    public Faker faker() {
+        return new Faker(new Locale("ko"));
     }
 
     public static final Attribute field(
