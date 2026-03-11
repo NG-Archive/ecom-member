@@ -33,7 +33,7 @@ class MemberControllerTest extends AcceptedTest {
         ReadMemberResponse response =
             given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", 1L)
+                .pathParam("id", existId)
                 .consumeWith(document(
                     "Member",
                     "회원 상세 조회",
