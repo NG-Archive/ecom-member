@@ -35,17 +35,14 @@ public class ErrorMessageUtil {
     }
 
     public String getErrorMessage(String errorCode, Object[] args) {
-        Object[] rawArgs = args;
-        Object[] copiedArgs = new Object[0];
+        Object[] reversed = null;
 
-        if (rawArgs != null && rawArgs.length > 1) {
-            copiedArgs = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
-            List<Object> list = Arrays.asList(args);
-            Collections.reverse(list);
-            copiedArgs = list.toArray();
+        if (args != null && args.length > 1) {
+            Object[] copied = Arrays.copyOfRange(args, 1, args.length);
+            reversed = Arrays.asList(copied).reversed().toArray();
         }
         try {
-            return ms.getMessage(errorCode, copiedArgs, Locale.KOREA);
+            return ms.getMessage(errorCode, reversed, Locale.KOREA);
         } catch (Exception ex) {
             return ms.getMessage(EXCEPTION_ERROR_CODE, null, Locale.KOREA);
         }
