@@ -12,7 +12,7 @@ public record CreateMemberRequest(
         @NotBlank(message = "{member.password.blank}")
         String password
 ) {
-    public Member toMember(String encryptedPw) {
-        return new Member(null, name, encryptedPw);
+    public CreateMemberCommand toCommand() {
+        return new CreateMemberCommand(name, password);
     }
 }

@@ -19,13 +19,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @RequestMapping("/member/{id}")
-    public void readMember(@PathVariable Long id) {
+    public Mono<ReadMemberResponse> readMember(@PathVariable Long id) {
+        return memberService.readMember(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/member")
     public Mono<CreateMemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
-        String encryptedPw = PasswordManager.encrypt(request.password());
-        return memberService.createMember(request.toMember(encryptedPw));
+        return memberService.createMember(request.toCommand());
     }
 }
