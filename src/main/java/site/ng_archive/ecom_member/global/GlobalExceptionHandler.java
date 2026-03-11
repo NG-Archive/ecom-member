@@ -7,14 +7,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import org.springframework.web.server.ServerWebInputException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ServerWebInputException.class)
+    @ExceptionHandler(WebExchangeBindException.class)
     public ErrorResponse handleWebExchangeBindException(WebExchangeBindException ex) {
         FieldError error = ex.getBindingResult().getFieldErrors().getFirst();
         String code = "input.error." + error.getField();
@@ -30,6 +29,7 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("runtime.error", "실행 중 오류가 발생했습니다.");
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGeneralException(Exception ex) {
         log.error("handleGeneralException: ", ex);
