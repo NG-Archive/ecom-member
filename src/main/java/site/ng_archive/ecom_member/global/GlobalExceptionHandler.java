@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import site.ng_archive.ecom_member.domain.EntityNotFoundException;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
@@ -20,7 +22,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(WebExchangeBindException.class)
     public ErrorResponse handleWebExchangeBindException(WebExchangeBindException ex) {
-        FieldError error = ex.getBindingResult().getFieldErrors().getFirst();
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        if (fieldErrors.isEmpty()) {
+            return errorMessageUtil.getErrorResult("input.error.unknown", "입력값 오류가 발생했습니다.");
+        }
+        FieldError error = fieldErrors.getFirst();
+
         String code = "input.error." + error.getField();
         String message = error.getDefaultMessage();
 
