@@ -2,9 +2,8 @@ package site.ng_archive.ecom_member.config;
 
 
 import net.datafaker.Faker;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
@@ -15,25 +14,11 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
-
-@TestConfiguration
+@Configuration
 public class RestDocsConfig {
 
-    @Value("${spring.profiles.active:local}")
-    private String profile;
-
     public OperationRequestPreprocessor getRequestPreprocessor() {
-        return switch (profile) {
-            case "local" -> Preprocessors.preprocessRequest(
-                Preprocessors.prettyPrint(),
-                modifyUris().scheme("http").host("localhost")
-            );
-            default -> Preprocessors.preprocessRequest(
-                Preprocessors.prettyPrint(),
-                modifyUris().scheme("https").host("prod-host").removePort()
-            );
-        };
+        return Preprocessors.preprocessRequest(Preprocessors.prettyPrint());
     }
 
     public OperationResponsePreprocessor getResponsePreprocessor() {
@@ -52,11 +37,5 @@ public class RestDocsConfig {
     @Bean
     public Faker faker() {
         return new Faker(new Locale("ko"));
-    }
-
-    public static final Attribute field(
-            final String key,
-            final String value){
-        return new Attribute(key,value);
     }
 }

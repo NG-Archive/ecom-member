@@ -3,6 +3,7 @@ package site.ng_archive.ecom_member.config;
 import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippet;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder;
 import com.epages.restdocs.apispec.WebTestClientRestDocumentationWrapper;
 import io.restassured.module.webtestclient.RestAssuredWebTestClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.function.Consumer;
 
 
-
 @Import(RestDocsConfig.class)
 @ExtendWith({RestDocumentationExtension.class})
 @AutoConfigureRestDocs
@@ -32,9 +32,6 @@ import java.util.function.Consumer;
         webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
 public abstract class AcceptedTest {
-
-    @Autowired
-    protected Consumer<EntityExchangeResult<byte[]>> restDocs;
 
     @Autowired
     protected RestDocsConfig restDocsConfig;
@@ -52,27 +49,24 @@ public abstract class AcceptedTest {
         RestAssuredWebTestClient.webTestClient(webTestClient);
     }
 
+    protected static ResourceSnippetParametersBuilder info() {
+        return ResourceSnippetParameters.builder();
+    }
+
     protected Consumer<EntityExchangeResult<byte[]>> document(
-            String tag,
-            String summary,
-            String description,
+            ResourceSnippetParametersBuilder info,
             Snippet... snippets) {
+
         return WebTestClientRestDocumentationWrapper.document(
                 "{class-name}/{method-name}",
                 restDocsConfig.getRequestPreprocessor(),
                 restDocsConfig.getResponsePreprocessor(),
-                mergeSnippets(snippets, getResource(tag, summary, description))
+                mergeSnippets(snippets, getResource(info))
         );
     }
 
-    private static ResourceSnippet getResource(String tag, String summary, String description) {
-        return ResourceDocumentation.resource(
-                ResourceSnippetParameters.builder()
-                        .tag(tag)
-                        .summary(summary)
-                        .description(description)
-                        .build()
-        );
+    private static ResourceSnippet getResource(ResourceSnippetParametersBuilder info) {
+        return ResourceDocumentation.resource(info.build());
     }
 
     private static Snippet[] mergeSnippets(Snippet[] snippets, ResourceSnippet resourceSnippet) {
