@@ -220,7 +220,7 @@ class MemberControllerTest extends AcceptedTest {
                 .consumeWith(document(
                     "Member",
                     "로그인",
-                    "아이디와 패스워드로 로그인을 합니다. 응답값은 토큰입니다.",
+                    "아이디와 패스워드로 로그인을 시도하며, 인증 실패 시 오류 응답을 반환합니다.",
                     requestFields(
                         fieldWithPath("id")
                             .description("회원 ID")
