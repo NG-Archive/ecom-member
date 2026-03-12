@@ -23,7 +23,9 @@ public final class TokenUtil {
     }
 
     public static Long verify(String token) {
-        return JWT.require(Algorithm.HMAC512(TokenSecretKey.getJwtSecret())).build()
+        return JWT.require(Algorithm.HMAC512(TokenSecretKey.getJwtSecret()))
+            .withSubject(JWT_NAME)
+            .build()
             .verify(token)
             .getClaim(CLAIM_MEMBER_ID).asLong();
     }
