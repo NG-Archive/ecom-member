@@ -12,10 +12,7 @@ import site.ng_archive.ecom_member.global.TokenUtil;
 
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 class MemberControllerTest extends AcceptedTest {
@@ -36,23 +33,24 @@ class MemberControllerTest extends AcceptedTest {
                 .contentType(ContentType.JSON)
                 .pathParam("id", existId)
                 .consumeWith(document(
-                    "Member",
-                    "회원 상세 조회",
-                    "회원 ID를 사용하여 상세 정보를 조회합니다.",
-                    pathParameters(
-                        parameterWithName("id").description("회원 아이디")
-                    ),
-                    responseFields(
-                        fieldWithPath("id")
-                            .description("회원 ID")
-                            .type(JsonFieldType.NUMBER),
-                        fieldWithPath("name")
-                            .description("회원 이름")
-                            .type(JsonFieldType.STRING)
-                    )
+                    info()
+                        .tag("Member")
+                        .summary("회원 상세 조회")
+                        .description("회원 ID를 사용하여 상세 정보를 조회합니다.")
+                        .pathParameters(
+                            parameterWithName("id").description("회원 아이디")
+                        )
+                        .responseFields(
+                            fieldWithPath("id")
+                                .description("회원 ID")
+                                .type(JsonFieldType.NUMBER),
+                            fieldWithPath("name")
+                                .description("회원 이름")
+                                .type(JsonFieldType.STRING)
+                        )
                 ))
                 .get("member/{id}")
-            .then()
+                .then()
                 .status(HttpStatus.OK)
                 .log().all()
                 .extract().body().as(ReadMemberResponse.class);
@@ -68,23 +66,24 @@ class MemberControllerTest extends AcceptedTest {
                 .contentType(ContentType.JSON)
                 .pathParam("id", -1L)
                 .consumeWith(document(
-                    "Member",
-                    "회원 상세 조회",
-                    "회원 ID를 사용하여 상세 정보를 조회합니다.",
-                    pathParameters(
-                        parameterWithName("id").description("회원 아이디")
-                    ),
-                    responseFields(
-                        fieldWithPath("errorCode")
-                            .description("오류 코드")
-                            .type(JsonFieldType.STRING),
-                        fieldWithPath("message")
-                            .description("오류 메시지")
-                            .type(JsonFieldType.STRING)
-                    )
+                    info()
+                        .tag("Member")
+                        .summary("회원 상세 조회")
+                        .description("회원 ID를 사용하여 상세 정보를 조회합니다.")
+                        .pathParameters(
+                            parameterWithName("id").description("회원 아이디")
+                        )
+                        .responseFields(
+                            fieldWithPath("errorCode")
+                                .description("오류 코드")
+                                .type(JsonFieldType.STRING),
+                            fieldWithPath("message")
+                                .description("오류 메시지")
+                                .type(JsonFieldType.STRING)
+                        )
                 ))
                 .get("member/{id}")
-            .then()
+                .then()
                 .status(HttpStatus.NOT_FOUND)
                 .log().all()
                 .extract().body().as(ErrorResponse.class);
@@ -101,27 +100,28 @@ class MemberControllerTest extends AcceptedTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .consumeWith(document(
-                    "Member",
-                    "회원 가입",
-                    "아이디와 패스워드로 회원가입을 합니다.",
-                    requestFields(
-                        fieldWithPath("name")
-                            .description("회원 이름")
-                            .type(JsonFieldType.STRING)
-                            .attributes(key("constraints").value("length(min = 1, max = 20)")),
-                        fieldWithPath("password")
-                            .description("패스워드")
-                            .type(JsonFieldType.STRING)
-                            .attributes(key("constraints").value("length(min = 4, max = 20)"))
-                    ),
-                    responseFields(
-                        fieldWithPath("id")
-                            .description("회원 ID")
-                            .type(JsonFieldType.NUMBER)
-                    )
+                    info()
+                        .tag("Member")
+                        .summary("회원 가입")
+                        .description("아이디와 패스워드로 회원가입을 합니다.")
+                        .requestFields(
+                            fieldWithPath("name")
+                                .description("회원 이름")
+                                .type(JsonFieldType.STRING)
+                                .attributes(key("constraints").value("length(min = 1, max = 20)")),
+                            fieldWithPath("password")
+                                .description("패스워드")
+                                .type(JsonFieldType.STRING)
+                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                        )
+                        .responseFields(
+                            fieldWithPath("id")
+                                .description("회원 ID")
+                                .type(JsonFieldType.NUMBER)
+                        )
                 ))
                 .post("/member")
-            .then()
+                .then()
                 .log().all()
                 .status(HttpStatus.CREATED)
                 .extract().body().as(CreateMemberResponse.class);
@@ -139,30 +139,31 @@ class MemberControllerTest extends AcceptedTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .consumeWith(document(
-                    "Member",
-                    "회원 가입",
-                    "아이디와 패스워드로 회원가입을 합니다.",
-                    requestFields(
-                        fieldWithPath("name")
-                            .description("회원 이름")
-                            .type(JsonFieldType.STRING)
-                            .attributes(key("constraints").value("length(min = 1, max = 20)")),
-                        fieldWithPath("password")
-                            .description("패스워드")
-                            .type(JsonFieldType.STRING)
-                            .attributes(key("constraints").value("length(min = 4, max = 20)"))
-                    ),
-                    responseFields(
-                        fieldWithPath("errorCode")
-                            .description("오류 코드")
-                            .type(JsonFieldType.STRING),
-                        fieldWithPath("message")
-                            .description("오류 메시지")
-                            .type(JsonFieldType.STRING)
-                    )
+                    info()
+                        .tag("Member")
+                        .summary("회원 가입")
+                        .description("아이디와 패스워드로 회원가입을 합니다.")
+                        .requestFields(
+                            fieldWithPath("name")
+                                .description("회원 이름")
+                                .type(JsonFieldType.STRING)
+                                .attributes(key("constraints").value("length(min = 1, max = 20)")),
+                            fieldWithPath("password")
+                                .description("패스워드")
+                                .type(JsonFieldType.STRING)
+                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                        )
+                        .responseFields(
+                            fieldWithPath("errorCode")
+                                .description("오류 코드")
+                                .type(JsonFieldType.STRING),
+                            fieldWithPath("message")
+                                .description("오류 메시지")
+                                .type(JsonFieldType.STRING)
+                        )
                 ))
                 .post("/member")
-            .then()
+                .then()
                 .log().all()
                 .status(HttpStatus.BAD_REQUEST)
                 .extract().body().as(ErrorResponse.class);
@@ -181,23 +182,24 @@ class MemberControllerTest extends AcceptedTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .consumeWith(document(
-                    "Member",
-                    "로그인",
-                    "아이디와 패스워드로 로그인을 합니다. 응답값은 토큰입니다.",
-                    requestFields(
-                        fieldWithPath("id")
-                            .description("회원 ID")
-                            .type(JsonFieldType.NUMBER),
-                        fieldWithPath("password")
-                            .description("패스워드")
-                            .type(JsonFieldType.STRING)
-                            .attributes(key("constraints").value("length(min = 4, max = 20)"))
-                    ),
-                    responseFields(
-                        fieldWithPath("token")
-                            .description("JWT 토큰(유효기간 30분)")
-                            .type(JsonFieldType.STRING)
-                    )
+                    info()
+                        .tag("Member")
+                        .summary("로그인")
+                        .description("아이디와 패스워드로 로그인을 합니다. 응답값은 토큰입니다.")
+                        .requestFields(
+                            fieldWithPath("id")
+                                .description("회원 ID")
+                                .type(JsonFieldType.NUMBER),
+                            fieldWithPath("password")
+                                .description("패스워드")
+                                .type(JsonFieldType.STRING)
+                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                        )
+                        .responseFields(
+                            fieldWithPath("token")
+                                .description("JWT 토큰(유효기간 30분)")
+                                .type(JsonFieldType.STRING)
+                        )
                 ))
                 .post("/login")
                 .then()
@@ -218,26 +220,27 @@ class MemberControllerTest extends AcceptedTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .consumeWith(document(
-                    "Member",
-                    "로그인",
-                    "아이디와 패스워드로 로그인을 시도하며, 인증 실패 시 오류 응답을 반환합니다.",
-                    requestFields(
-                        fieldWithPath("id")
-                            .description("회원 ID")
-                            .type(JsonFieldType.NUMBER),
-                        fieldWithPath("password")
-                            .description("패스워드")
-                            .type(JsonFieldType.STRING)
-                            .attributes(key("constraints").value("length(min = 4, max = 20)"))
-                    ),
-                    responseFields(
-                        fieldWithPath("errorCode")
-                            .description("오류 코드")
-                            .type(JsonFieldType.STRING),
-                        fieldWithPath("message")
-                            .description("오류 메시지")
-                            .type(JsonFieldType.STRING)
-                    )
+                    info()
+                        .tag("Member")
+                        .summary("로그인")
+                        .description("아이디와 패스워드로 로그인을 시도하며, 인증 실패 시 오류 응답을 반환합니다.")
+                        .requestFields(
+                            fieldWithPath("id")
+                                .description("회원 ID")
+                                .type(JsonFieldType.NUMBER),
+                            fieldWithPath("password")
+                                .description("패스워드")
+                                .type(JsonFieldType.STRING)
+                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                        )
+                        .responseFields(
+                            fieldWithPath("errorCode")
+                                .description("오류 코드")
+                                .type(JsonFieldType.STRING),
+                            fieldWithPath("message")
+                                .description("오류 메시지")
+                                .type(JsonFieldType.STRING)
+                        )
                 ))
                 .post("/login")
                 .then()
