@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import site.ng_archive.ecom_member.global.PasswordManager;
+import site.ng_archive.ecom_member.global.TokenUtil;
 
 @RequiredArgsConstructor
 @Service
@@ -22,5 +23,15 @@ public class MemberService {
                 .map(ReadMemberResponse::from)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new EntityNotFoundException("member.notfound"))));
 
+    }
+
+    public Mono<LoginResponse> login(LoginCommand command) {
+        return memberRepository.findById(command.id())
+                .filter(member -> PasswordManager.check(command.password(), member.password()))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new LoginFailException("member.login.fail"))))
+                .flatMap(member -> {
+                    String token = TokenUtil.getSign(member.toPrincipalDetails());
+                    return Mono.just(new LoginResponse(token));
+                });
     }
 }

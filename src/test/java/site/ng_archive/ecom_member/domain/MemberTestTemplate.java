@@ -3,6 +3,7 @@ package site.ng_archive.ecom_member.domain;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 public class MemberTestTemplate {
@@ -19,5 +20,14 @@ public class MemberTestTemplate {
 
         CreateMemberCommand command = new CreateMemberCommand(name, password);
         return memberService.createMember(command).block().id();
+    }
+
+    public Member createMember(String name, String password) {
+        CreateMemberCommand command = new CreateMemberCommand(name, password);
+        Long memberId = memberService.createMember(command).block().id();
+
+        return memberService.readMember(memberId)
+            .map(res -> new Member(res.id(), res.name(), password))
+            .block();
     }
 }

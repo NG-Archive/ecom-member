@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import site.ng_archive.ecom_member.domain.EntityNotFoundException;
+import site.ng_archive.ecom_member.domain.LoginFailException;
 
 import java.util.List;
 
@@ -38,9 +39,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex) {
-        String errorCode = errorMessageUtil.getErrorCode(ex);
-        String errorMessage = errorMessageUtil.getErrorMessage(errorCode);
-        return errorMessageUtil.getErrorResult(errorCode, errorMessage);
+        return errorMessageUtil.getErrorResult(ex);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(LoginFailException.class)
+    public ErrorResponse handleLoginFailException(LoginFailException ex) {
+        return errorMessageUtil.getErrorResult(ex);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
