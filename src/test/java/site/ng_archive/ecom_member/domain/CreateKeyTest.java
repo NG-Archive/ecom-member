@@ -1,9 +1,11 @@
 package site.ng_archive.ecom_member.domain;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.junit.jupiter.api.Disabled;
 
 public class CreateKeyTest {
 
+    @Disabled
     @org.junit.jupiter.api.Test
     void 암호화키생성() {
 
