@@ -52,4 +52,10 @@ public class ErrorMessageUtil {
         return new ErrorResponse(errorCode, message);
     }
 
+    public ErrorResponse getErrorResult(Exception e) {
+        String code = getErrorCode(e);
+        String message = getErrorMessage(code);
+        return new ErrorResponse(code, message);
+    }
+
 }
