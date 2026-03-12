@@ -224,8 +224,7 @@ class MemberControllerTest extends AcceptedTest {
                     requestFields(
                         fieldWithPath("id")
                             .description("회원 ID")
-                            .type(JsonFieldType.NUMBER)
-                            .attributes(key("constraints").value("length(min = 1, max = 20)")),
+                            .type(JsonFieldType.NUMBER),
                         fieldWithPath("password")
                             .description("패스워드")
                             .type(JsonFieldType.STRING)
