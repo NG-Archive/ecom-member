@@ -5,22 +5,19 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.restdocs.payload.JsonFieldType;
 import site.ng_archive.ecom_member.config.AcceptedTest;
+import site.ng_archive.ecom_member.domain.member.Member;
+import site.ng_archive.ecom_member.domain.member.MemberRepository;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
 import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
 import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
 import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
-import site.ng_archive.ecom_member.domain.member.Member;
-import site.ng_archive.ecom_member.domain.member.MemberRepository;
 import site.ng_archive.ecom_member.global.error.ErrorResponse;
 import site.ng_archive.ecom_member.global.token.TokenUtil;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.snippet.Attributes.key;
 
 class MemberControllerTest extends AcceptedTest {
 
@@ -48,12 +45,8 @@ class MemberControllerTest extends AcceptedTest {
                             parameterWithName("id").description("회원 아이디")
                         )
                         .responseFields(
-                            fieldWithPath("id")
-                                .description("회원 ID")
-                                .type(JsonFieldType.NUMBER),
-                            fieldWithPath("name")
-                                .description("회원 이름")
-                                .type(JsonFieldType.STRING)
+                            field(ReadMemberResponse.class, "id", "회원 ID"),
+                            field(ReadMemberResponse.class, "name", "회원 이름")
                         )
                 ))
                 .get("member/{id}")
@@ -81,12 +74,8 @@ class MemberControllerTest extends AcceptedTest {
                             parameterWithName("id").description("회원 아이디")
                         )
                         .responseFields(
-                            fieldWithPath("errorCode")
-                                .description("오류 코드")
-                                .type(JsonFieldType.STRING),
-                            fieldWithPath("message")
-                                .description("오류 메시지")
-                                .type(JsonFieldType.STRING)
+                            field(ErrorResponse.class, "errorCode", "오류 코드"),
+                            field(ErrorResponse.class, "message", "오류 메시지")
                         )
                 ))
                 .get("member/{id}")
@@ -112,19 +101,11 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("회원 가입")
                         .description("아이디와 패스워드로 회원가입을 합니다.")
                         .requestFields(
-                            fieldWithPath("name")
-                                .description("회원 이름")
-                                .type(JsonFieldType.STRING)
-                                .attributes(key("constraints").value("length(min = 1, max = 20)")),
-                            fieldWithPath("password")
-                                .description("패스워드")
-                                .type(JsonFieldType.STRING)
-                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                            field(CreateMemberRequest.class, "name", "회원 이름"),
+                            field(CreateMemberRequest.class, "password", "패스워드")
                         )
                         .responseFields(
-                            fieldWithPath("id")
-                                .description("회원 ID")
-                                .type(JsonFieldType.NUMBER)
+                            field(CreateMemberResponse.class, "id", "회원 ID")
                         )
                 ))
                 .post("/member")
@@ -151,22 +132,12 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("회원 가입")
                         .description("아이디와 패스워드로 회원가입을 합니다.")
                         .requestFields(
-                            fieldWithPath("name")
-                                .description("회원 이름")
-                                .type(JsonFieldType.STRING)
-                                .attributes(key("constraints").value("length(min = 1, max = 20)")),
-                            fieldWithPath("password")
-                                .description("패스워드")
-                                .type(JsonFieldType.STRING)
-                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                            field(CreateMemberRequest.class, "name", "회원 이름"),
+                            field(CreateMemberRequest.class, "password", "패스워드")
                         )
                         .responseFields(
-                            fieldWithPath("errorCode")
-                                .description("오류 코드")
-                                .type(JsonFieldType.STRING),
-                            fieldWithPath("message")
-                                .description("오류 메시지")
-                                .type(JsonFieldType.STRING)
+                            field(ErrorResponse.class, "errorCode", "오류 코드"),
+                            field(ErrorResponse.class, "message", "오류 메시지")
                         )
                 ))
                 .post("/member")
@@ -194,18 +165,11 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("로그인")
                         .description("아이디와 패스워드로 로그인을 합니다. 응답값은 토큰입니다.")
                         .requestFields(
-                            fieldWithPath("id")
-                                .description("회원 ID")
-                                .type(JsonFieldType.NUMBER),
-                            fieldWithPath("password")
-                                .description("패스워드")
-                                .type(JsonFieldType.STRING)
-                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                            field(LoginRequest.class, "id", "회원 ID"),
+                            field(LoginRequest.class, "password", "패스워드")
                         )
                         .responseFields(
-                            fieldWithPath("token")
-                                .description("JWT 토큰(유효기간 30분)")
-                                .type(JsonFieldType.STRING)
+                            field(LoginResponse.class, "token", "JWT 토큰(유효기간 30분)")
                         )
                 ))
                 .post("/login")
@@ -232,21 +196,12 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("로그인")
                         .description("아이디와 패스워드로 로그인을 시도하며, 인증 실패 시 오류 응답을 반환합니다.")
                         .requestFields(
-                            fieldWithPath("id")
-                                .description("회원 ID")
-                                .type(JsonFieldType.NUMBER),
-                            fieldWithPath("password")
-                                .description("패스워드")
-                                .type(JsonFieldType.STRING)
-                                .attributes(key("constraints").value("length(min = 4, max = 20)"))
+                            field(LoginRequest.class, "id", "회원 ID"),
+                            field(LoginRequest.class, "password", "패스워드")
                         )
                         .responseFields(
-                            fieldWithPath("errorCode")
-                                .description("오류 코드")
-                                .type(JsonFieldType.STRING),
-                            fieldWithPath("message")
-                                .description("오류 메시지")
-                                .type(JsonFieldType.STRING)
+                            field(ErrorResponse.class, "errorCode", "오류 코드"),
+                            field(ErrorResponse.class, "message", "오류 메시지")
                         )
                 ))
                 .post("/login")
