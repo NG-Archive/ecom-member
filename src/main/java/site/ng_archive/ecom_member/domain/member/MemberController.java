@@ -26,17 +26,20 @@ public class MemberController {
 
     @GetMapping("/member/{id}")
     public Mono<ReadMemberResponse> readMember(@PathVariable Long id) {
-        return memberService.readMember(id);
+        return memberService.readMember(id)
+            .map(ReadMemberResponse::from);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/member")
     public Mono<CreateMemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
-        return memberService.createMember(request.toCommand());
+        return memberService.createMember(request.toCommand())
+            .map(CreateMemberResponse::from);
     }
 
     @PostMapping("/login")
     public Mono<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        return memberService.login(request.toCommand());
+        return memberService.login(request.toCommand())
+            .map(LoginResponse::new);
     }
 }

@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.domain;
+package site.ng_archive.ecom_member.domain.member;
 
 import io.restassured.http.ContentType;
 import org.assertj.core.api.Assertions;
@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import site.ng_archive.ecom_member.config.AcceptedTest;
-import site.ng_archive.ecom_member.domain.member.Member;
-import site.ng_archive.ecom_member.domain.member.MemberRepository;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
 import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
@@ -30,7 +28,7 @@ class MemberControllerTest extends AcceptedTest {
     @Test
     void 회원단건조회() {
 
-        Long existId = memberTestTemplate.createMember();
+        Long existId = memberTestTemplate.createMember().id();
 
         ReadMemberResponse response =
             given()
@@ -153,8 +151,9 @@ class MemberControllerTest extends AcceptedTest {
 
     @Test
     void 로그인() {
-        Member exist = memberTestTemplate.createMember("name", "password");
-        LoginRequest request = new LoginRequest(exist.id(), exist.password());
+        String password = "password";
+        Member exist = memberTestTemplate.createMember("name", password);
+        LoginRequest request = new LoginRequest(exist.id(), password);
         LoginResponse response =
             given()
                 .contentType(ContentType.JSON)
@@ -184,8 +183,9 @@ class MemberControllerTest extends AcceptedTest {
 
     @Test
     void 로그인_실패() {
-        Member exist = memberTestTemplate.createMember("name", "password");
-        LoginRequest request = new LoginRequest(exist.id(), exist.password() + "fail");
+        String password = "password";
+        Member exist = memberTestTemplate.createMember("name", password);
+        LoginRequest request = new LoginRequest(exist.id(), password + "fail");
         ErrorResponse response =
             given()
                 .contentType(ContentType.JSON)
