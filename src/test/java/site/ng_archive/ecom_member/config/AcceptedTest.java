@@ -16,13 +16,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.constraints.Constraint;
+import org.springframework.restdocs.constraints.ConstraintDescriptions;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.snippet.Attributes.key;
 
 @Import(RestDocsConfig.class)
 @ExtendWith({RestDocumentationExtension.class})
@@ -63,6 +70,25 @@ public abstract class AcceptedTest {
                 restDocsConfig.getResponsePreprocessor(),
                 mergeSnippets(snippets, getResource(info))
         );
+    }
+
+    protected static FieldDescriptor field(Class<?> clazz, String path, String description) {
+        List<String> constraints = new ConstraintDescriptions(clazz).descriptionsForProperty(path);
+        String combinedDescription = description;
+
+        if (!constraints.isEmpty()) {
+            combinedDescription += " (" + String.join(", ", constraints) + ")";
+        }
+
+        return fieldWithPath(path)
+            .description(combinedDescription)
+            .attributes(
+                key("validationConstraints").value(
+                    constraints.stream()
+                        .map(c -> new Constraint(c, Collections.emptyMap()))
+                        .toList()
+                )
+            );
     }
 
     private static ResourceSnippet getResource(ResourceSnippetParametersBuilder info) {
