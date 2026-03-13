@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.domain;
+package site.ng_archive.ecom_member.domain.member.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

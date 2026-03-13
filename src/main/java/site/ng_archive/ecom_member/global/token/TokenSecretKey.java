@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.global;
+package site.ng_archive.ecom_member.global.token;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -3,7 +3,9 @@ package site.ng_archive.ecom_member.domain;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import site.ng_archive.ecom_member.domain.member.dto.CreateMemberCommand;
+import site.ng_archive.ecom_member.domain.member.Member;
+import site.ng_archive.ecom_member.domain.member.MemberService;
 
 @Component
 public class MemberTestTemplate {

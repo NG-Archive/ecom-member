@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.global;
+package site.ng_archive.ecom_member.global.token;
 
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;

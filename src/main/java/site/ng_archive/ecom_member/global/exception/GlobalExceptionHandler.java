@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.global;
+package site.ng_archive.ecom_member.global.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import site.ng_archive.ecom_member.domain.EntityNotFoundException;
-import site.ng_archive.ecom_member.domain.LoginFailException;
+import site.ng_archive.ecom_member.global.error.ErrorMessageUtil;
+import site.ng_archive.ecom_member.global.error.ErrorResponse;
+import site.ng_archive.ecom_member.global.exception.EntityNotFoundException;
+import site.ng_archive.ecom_member.global.exception.LoginFailException;
 
 import java.util.List;
 

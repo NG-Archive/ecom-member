@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.domain;
+package site.ng_archive.ecom_member.domain.member;
 
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
