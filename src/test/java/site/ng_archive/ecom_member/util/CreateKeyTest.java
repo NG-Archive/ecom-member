@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.domain;
+package site.ng_archive.ecom_member.util;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.Disabled;

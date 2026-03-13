@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.domain;
+package site.ng_archive.ecom_member.domain.member;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import site.ng_archive.ecom_member.global.PasswordManager;
+import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
+import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
+import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
+import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
+import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
 
 @Slf4j
 @RequiredArgsConstructor

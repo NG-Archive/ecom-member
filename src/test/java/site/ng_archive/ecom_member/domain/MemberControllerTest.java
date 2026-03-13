@@ -7,8 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.payload.JsonFieldType;
 import site.ng_archive.ecom_member.config.AcceptedTest;
-import site.ng_archive.ecom_member.global.ErrorResponse;
-import site.ng_archive.ecom_member.global.TokenUtil;
+import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
+import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
+import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
+import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
+import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
+import site.ng_archive.ecom_member.domain.member.Member;
+import site.ng_archive.ecom_member.domain.member.MemberRepository;
+import site.ng_archive.ecom_member.global.error.ErrorResponse;
+import site.ng_archive.ecom_member.global.token.TokenUtil;
 
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;

@@ -1,9 +1,8 @@
-package site.ng_archive.ecom_member.global;
+package site.ng_archive.ecom_member.global.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import site.ng_archive.ecom_member.domain.TokenInvalidException;
+import site.ng_archive.ecom_member.global.exception.TokenInvalidException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
