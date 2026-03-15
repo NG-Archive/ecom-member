@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import site.ng_archive.ecom_member.global.auth.exception.AccessDeniedException;
+import site.ng_archive.ecom_member.global.auth.exception.ForbiddenException;
 import site.ng_archive.ecom_member.global.error.ErrorMessageUtil;
 import site.ng_archive.ecom_member.global.error.ErrorResponse;
-import site.ng_archive.ecom_member.global.exception.EntityNotFoundException;
-import site.ng_archive.ecom_member.global.exception.LoginFailException;
+import site.ng_archive.ecom_member.global.auth.exception.LoginFailException;
 
 import java.util.List;
 
@@ -41,6 +42,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex) {
+        return errorMessageUtil.getErrorResult(ex);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenException.class)
+    public ErrorResponse handleForbiddenException(ForbiddenException ex) {
+        return errorMessageUtil.getErrorResult(ex);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
         return errorMessageUtil.getErrorResult(ex);
     }
 

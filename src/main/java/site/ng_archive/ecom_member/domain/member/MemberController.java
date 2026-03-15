@@ -16,6 +16,10 @@ import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
 import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
 import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
 import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
+import site.ng_archive.ecom_member.global.auth.UserContext;
+import site.ng_archive.ecom_member.global.auth.aspect.LoginUser;
+import site.ng_archive.ecom_member.global.auth.aspect.RequireRoles;
+import site.ng_archive.ecom_member.global.auth.exception.ForbiddenException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,9 +28,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @RequireRoles
     @GetMapping("/member/{id}")
-    public Mono<ReadMemberResponse> readMember(@PathVariable Long id) {
-        return memberService.readMember(id)
+    public Mono<ReadMemberResponse> readMember(@LoginUser UserContext user, @PathVariable Long id) {
+        return Mono.just(user)
+            .filter(u -> u.id().equals(id))
+            .switchIfEmpty(Mono.defer(() -> Mono.error(new ForbiddenException("auth.forbidden"))))
+            .flatMap(u -> memberService.readMember(u.id()))
             .map(ReadMemberResponse::from);
     }
 

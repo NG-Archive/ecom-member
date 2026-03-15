@@ -26,7 +26,7 @@ public class DeliveryInfoService {
         return memberRepository.existsById(memberId)
             .filter(exists -> exists)
             .switchIfEmpty(Mono.defer(() -> Mono.error(new EntityNotFoundException("member.notfound"))))
-            .then(deliveryInfoRepository.findById(id))
+            .then(deliveryInfoRepository.findByIdAndMemberId(id, memberId))
             .switchIfEmpty(Mono.defer(() -> Mono.error(new EntityNotFoundException("delivery-info.notfound"))));
     }
 

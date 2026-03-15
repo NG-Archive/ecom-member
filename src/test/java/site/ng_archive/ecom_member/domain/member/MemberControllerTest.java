@@ -11,9 +11,11 @@ import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
 import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
 import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
 import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
+import site.ng_archive.ecom_member.global.auth.UserContext;
 import site.ng_archive.ecom_member.global.error.ErrorResponse;
-import site.ng_archive.ecom_member.global.token.TokenUtil;
+import site.ng_archive.ecom_member.global.auth.token.TokenUtil;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 
@@ -28,17 +30,22 @@ class MemberControllerTest extends AcceptedTest {
     @Test
     void 회원단건조회() {
 
-        Long existId = memberTestTemplate.createMember().id();
+        String name = memberTestTemplate.getRandomName();
+        String password = memberTestTemplate.getRandomPassword();
+        Member member = memberTestTemplate.createMember(name, password);
+        String token = memberTestTemplate.login(member.id(), password);
 
         ReadMemberResponse response =
             given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", existId)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("id", member.id())
                 .consumeWith(document(
                     info()
                         .tag("Member")
                         .summary("회원 상세 조회")
                         .description("회원 ID를 사용하여 상세 정보를 조회합니다.")
+                        .requestHeaders(headerWithName("Authorization").description("인증 토큰"))
                         .pathParameters(
                             parameterWithName("id").description("회원 아이디")
                         )
@@ -53,16 +60,22 @@ class MemberControllerTest extends AcceptedTest {
                 .log().all()
                 .extract().body().as(ReadMemberResponse.class);
 
-        Assertions.assertThat(existId).isEqualTo(response.id());
+        Assertions.assertThat(member.id()).isEqualTo(response.id());
     }
 
     @Test
-    void 회원단건조회_미존재회원오류() {
+    void 회원단건조회_토큰없음() {
+
+        String name = memberTestTemplate.getRandomName();
+        String password = memberTestTemplate.getRandomPassword();
+        Member member = memberTestTemplate.createMember(name, password);
+        String token = memberTestTemplate.login(member.id(), password);
 
         ErrorResponse response =
             given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", -1L)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("id", 999L)
                 .consumeWith(document(
                     info()
                         .tag("Member")
@@ -78,12 +91,46 @@ class MemberControllerTest extends AcceptedTest {
                 ))
                 .get("member/{id}")
                 .then()
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.FORBIDDEN)
                 .log().all()
                 .extract().body().as(ErrorResponse.class);
 
-        Assertions.assertThat(response.errorCode()).isEqualTo("member.notfound");
-        Assertions.assertThat(response.message()).isEqualTo("회원이 존재하지 않습니다.");
+        Assertions.assertThat(response.errorCode()).isEqualTo("auth.forbidden");
+        Assertions.assertThat(response.message()).isEqualTo("권한이 필요합니다.");
+    }
+
+    @Test
+    void 회원단건조회_권한없음() {
+
+        String name = memberTestTemplate.getRandomName();
+        String password = memberTestTemplate.getRandomPassword();
+        Member member = memberTestTemplate.createMember(name, password);
+
+        ErrorResponse response =
+            given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", member.id())
+                .consumeWith(document(
+                    info()
+                        .tag("Member")
+                        .summary("회원 상세 조회")
+                        .description("회원 ID를 사용하여 상세 정보를 조회합니다.")
+                        .pathParameters(
+                            parameterWithName("id").description("회원 아이디")
+                        )
+                        .responseFields(
+                            field(ErrorResponse.class, "errorCode", "오류 코드"),
+                            field(ErrorResponse.class, "message", "오류 메시지")
+                        )
+                ))
+                .get("member/{id}")
+                .then()
+                .status(HttpStatus.UNAUTHORIZED)
+                .log().all()
+                .extract().body().as(ErrorResponse.class);
+
+        Assertions.assertThat(response.errorCode()).isEqualTo("auth.unauthorized");
+        Assertions.assertThat(response.message()).isEqualTo("로그인이 필요합니다.");
     }
 
     @Test
@@ -177,7 +224,7 @@ class MemberControllerTest extends AcceptedTest {
                 .status(HttpStatus.OK)
                 .extract().body().as(LoginResponse.class);
 
-        Long verified = TokenUtil.verify(response.token());
+        Long verified = TokenUtil.verify(response.token()).id();
         Assertions.assertThat(exist.id()).isEqualTo(verified);
     }
 
@@ -212,6 +259,16 @@ class MemberControllerTest extends AcceptedTest {
 
         Assertions.assertThat(response.errorCode()).isEqualTo("member.login.fail");
         Assertions.assertThat(response.message()).isEqualTo("아이디 혹은 비밀번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    void 토큰인증() {
+        UserContext userContext = new UserContext(1L, MemberRole.USER);
+        String token = TokenUtil.getSign(userContext);
+        UserContext verified = TokenUtil.verify(token);
+
+        Assertions.assertThat(userContext.id()).isEqualTo(verified.id());
+        Assertions.assertThat(userContext.role()).isEqualTo(verified.role());
     }
 
 }
