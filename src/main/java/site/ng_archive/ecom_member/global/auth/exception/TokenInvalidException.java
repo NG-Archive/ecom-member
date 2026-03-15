@@ -1,4 +1,4 @@
-package site.ng_archive.ecom_member.global.exception;
+package site.ng_archive.ecom_member.global.auth.exception;
 
 import lombok.Getter;
 
