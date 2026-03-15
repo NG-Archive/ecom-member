@@ -39,6 +39,16 @@ public class GlobalExceptionHandler {
         return errorMessageUtil.getErrorResult(code, message);
     }
 
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ErrorResponse handleUnsupportedOperationException(UnsupportedOperationException ex) {
+        String errorCode = ex.getMessage();
+        if (errorCode == null || errorCode.isBlank()) {
+            errorCode = "error.unsupported.operation";
+        }
+        return errorMessageUtil.getErrorResult(errorCode, errorMessageUtil.getErrorMessage(errorCode));
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex) {

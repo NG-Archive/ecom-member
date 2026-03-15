@@ -38,7 +38,7 @@ public class AuthAspect {
                     // 비즈니스 로직(proceed) 실행
                     return (Mono<?>) joinPoint.proceed();
                 } catch (Throwable e) {
-                    return Mono.error(new RuntimeException(e));
+                    return Mono.error(e);
                 }
             });
         }
@@ -52,17 +52,13 @@ public class AuthAspect {
                 try {
                     return (Flux<?>) joinPoint.proceed();
                 } catch (Throwable e) {
-                    return Flux.error(new RuntimeException(e));
+                    return Flux.error(e);
                 }
             });
         }
 
-        // Mono/Flux가 아닌 일반 타입은 WebFlux 환경에서 권장되지 않으나 필요한 경우 처리
-        try {
-            return joinPoint.proceed();
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        // 3. 그 외 타입(일반 타입)은 예외 발생시켜 차단
+        throw new UnsupportedOperationException("error.not-implemented");
     }
 
     private boolean validate(ContextView ctx, RequireRoles requireRoles) {
@@ -78,6 +74,8 @@ public class AuthAspect {
         if (requiredRoles == null || requiredRoles.length == 0) {
             return Objects.nonNull(user.role());
         }
+
+        if (user.role() == null) return false;
 
         // 유저의 권한 중 하나라도 일치하는지 확인
         return Arrays.stream(requiredRoles)

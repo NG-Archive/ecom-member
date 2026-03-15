@@ -36,13 +36,9 @@ public final class TokenUtil {
         Long memberId = decoded.getClaim(CLAIM_MEMBER_ID).asLong();
         String role = decoded.getClaim(CLAIM_MEMBER_ROLE).asString();
 
-        Objects.requireNonNull(memberId, () -> {
+        if (memberId == null || role == null) {
             throw new TokenInvalidException("token.invalid");
-        });
-
-        Objects.requireNonNull(role, () -> {
-            throw new TokenInvalidException("token.invalid");
-        });
+        }
 
         return UserContext.of(memberId, MemberRole.valueOf(role));
     }
