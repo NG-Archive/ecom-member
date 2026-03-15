@@ -7,6 +7,7 @@ import org.springframework.web.reactive.result.method.HandlerMethodArgumentResol
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import site.ng_archive.ecom_member.global.auth.UserContext;
+import site.ng_archive.ecom_member.global.auth.exception.AccessDeniedException;
 
 @Component
 public class UserContextResolver implements HandlerMethodArgumentResolver {
@@ -25,7 +26,7 @@ public class UserContextResolver implements HandlerMethodArgumentResolver {
                 UserContext userContext = ctx.get("userContext");
                 return Mono.just(userContext);
             }
-            return Mono.empty();
+            return Mono.error(new AccessDeniedException("auth.unauthorized"));
         });
     }
 }
