@@ -12,9 +12,11 @@ public record Member(
 
         String password,
 
-        MemberRole role
+        MemberRole role,
+
+        MemberStatus status
 ){
     public static Member of(String name, String encryptedPassword) {
-        return new Member(null, name, encryptedPassword, MemberRole.USER);
+        return new Member(null, name, encryptedPassword, MemberRole.USER, MemberStatus.NORMAL);
     }
 }
