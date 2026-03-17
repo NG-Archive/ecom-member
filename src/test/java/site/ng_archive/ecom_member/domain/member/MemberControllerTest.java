@@ -18,6 +18,7 @@ import site.ng_archive.ecom_member.global.auth.token.TokenUtil;
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
+import static site.ng_archive.ecom_member.util.DocUtils.enumFormat;
 
 class MemberControllerTest extends AcceptedTest {
 
@@ -51,7 +52,8 @@ class MemberControllerTest extends AcceptedTest {
                         )
                         .responseFields(
                             field(ReadMemberResponse.class, "id", "회원 ID"),
-                            field(ReadMemberResponse.class, "name", "회원 이름")
+                            field(ReadMemberResponse.class, "name", "회원 이름"),
+                            field(ReadMemberResponse.class, "status", "회원 상태" + enumFormat(MemberStatus.class))
                         )
                 ))
                 .get("member/{id}")
