@@ -7,21 +7,25 @@ import io.restassured.http.ContentType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
-import site.ng_archive.ecom_member.config.AcceptedTest;
+import org.springframework.test.context.ContextConfiguration;
+import site.ng_archive.ecom_common.config.AcceptedTest;
+import site.ng_archive.ecom_common.error.ErrorResponse;
+import site.ng_archive.ecom_member.EcomMemberApplication;
 import site.ng_archive.ecom_member.domain.deliveryinfo.dto.CreateDeliveryInfoRequest;
 import site.ng_archive.ecom_member.domain.deliveryinfo.dto.CreateDeliveryInfoResponse;
 import site.ng_archive.ecom_member.domain.deliveryinfo.dto.ReadDeliveryInfoResponse;
 import site.ng_archive.ecom_member.domain.member.Member;
 import site.ng_archive.ecom_member.domain.member.MemberTestTemplate;
-import site.ng_archive.ecom_member.global.error.ErrorResponse;
 
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 
+@ContextConfiguration(classes = {EcomMemberApplication.class})
 class DeliveryInfoControllerTest extends AcceptedTest {
 
     @Autowired

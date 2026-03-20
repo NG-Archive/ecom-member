@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import site.ng_archive.ecom_common.handler.EntityNotFoundException;
 import site.ng_archive.ecom_member.domain.deliveryinfo.dto.CreateDeliveryInfoCommand;
 import site.ng_archive.ecom_member.domain.member.MemberRepository;
-import site.ng_archive.ecom_member.global.exception.EntityNotFoundException;
 
 @RequiredArgsConstructor
 @Service

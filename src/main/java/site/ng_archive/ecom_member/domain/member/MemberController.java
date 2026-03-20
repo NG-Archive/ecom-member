@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+import site.ng_archive.ecom_common.auth.UserContext;
+import site.ng_archive.ecom_common.auth.aspect.LoginUser;
+import site.ng_archive.ecom_common.auth.aspect.RequireRoles;
+import site.ng_archive.ecom_common.auth.exception.ForbiddenException;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
 import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
 import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
 import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
-import site.ng_archive.ecom_member.global.auth.UserContext;
-import site.ng_archive.ecom_member.global.auth.aspect.LoginUser;
-import site.ng_archive.ecom_member.global.auth.aspect.RequireRoles;
-import site.ng_archive.ecom_member.global.auth.exception.ForbiddenException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @RequireRoles
+    @RequireRoles()
     @GetMapping("/member/{id}")
     public Mono<ReadMemberResponse> readMember(@LoginUser UserContext user, @PathVariable Long id) {
         return Mono.just(user)

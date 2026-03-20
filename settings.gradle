@@ -1,1 +1,2 @@
 rootProject.name = 'ecom-member'
+includeBuild '../ecom-common'

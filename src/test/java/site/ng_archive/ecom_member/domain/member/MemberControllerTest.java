@@ -5,21 +5,25 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import site.ng_archive.ecom_member.config.AcceptedTest;
+import org.springframework.test.context.ContextConfiguration;
+import site.ng_archive.ecom_common.auth.Role;
+import site.ng_archive.ecom_common.auth.UserContext;
+import site.ng_archive.ecom_common.auth.token.TokenUtil;
+import site.ng_archive.ecom_common.config.AcceptedTest;
+import site.ng_archive.ecom_common.error.ErrorResponse;
+import site.ng_archive.ecom_member.EcomMemberApplication;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
 import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
 import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
 import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
-import site.ng_archive.ecom_member.global.auth.UserContext;
-import site.ng_archive.ecom_member.global.error.ErrorResponse;
-import site.ng_archive.ecom_member.global.auth.token.TokenUtil;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
-import static site.ng_archive.ecom_member.util.DocUtils.enumFormat;
+import static site.ng_archive.ecom_common.util.DocUtils.enumFormat;
 
+@ContextConfiguration(classes = {EcomMemberApplication.class})
 class MemberControllerTest extends AcceptedTest {
 
     @Autowired
@@ -265,7 +269,7 @@ class MemberControllerTest extends AcceptedTest {
 
     @Test
     void 토큰인증() {
-        UserContext userContext = new UserContext(1L, MemberRole.USER);
+        UserContext userContext = new UserContext(1L, Role.USER.name());
         String token = TokenUtil.getSign(userContext);
         UserContext verified = TokenUtil.verify(token);
 

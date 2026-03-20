@@ -3,9 +3,11 @@ package site.ng_archive.ecom_member.domain.member;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import site.ng_archive.ecom_common.config.EnableCommonTestFixtures;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberCommand;
 import site.ng_archive.ecom_member.domain.member.dto.LoginCommand;
 
+@EnableCommonTestFixtures
 @Component
 public class MemberTestTemplate {
 

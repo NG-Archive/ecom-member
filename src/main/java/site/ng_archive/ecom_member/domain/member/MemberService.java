@@ -3,13 +3,13 @@ package site.ng_archive.ecom_member.domain.member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import site.ng_archive.ecom_common.auth.PasswordManager;
+import site.ng_archive.ecom_common.auth.UserContext;
+import site.ng_archive.ecom_common.auth.exception.LoginFailException;
+import site.ng_archive.ecom_common.auth.token.TokenUtil;
+import site.ng_archive.ecom_common.handler.EntityNotFoundException;
 import site.ng_archive.ecom_member.domain.member.dto.CreateMemberCommand;
 import site.ng_archive.ecom_member.domain.member.dto.LoginCommand;
-import site.ng_archive.ecom_member.global.exception.EntityNotFoundException;
-import site.ng_archive.ecom_member.global.auth.exception.LoginFailException;
-import site.ng_archive.ecom_member.global.auth.PasswordManager;
-import site.ng_archive.ecom_member.global.auth.token.TokenUtil;
-import site.ng_archive.ecom_member.global.auth.UserContext;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +33,7 @@ public class MemberService {
                 .filter(member -> PasswordManager.check(command.password(), member.password()))
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new LoginFailException("member.login.fail"))))
                 .flatMap(member -> {
-                    String token = TokenUtil.getSign(UserContext.from(member));
+                    String token = TokenUtil.getSign(UserContext.of(member.id(), member.role().name()));
                     return Mono.just(token);
                 });
     }

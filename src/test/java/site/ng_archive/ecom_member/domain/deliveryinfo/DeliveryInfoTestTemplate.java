@@ -3,8 +3,10 @@ package site.ng_archive.ecom_member.domain.deliveryinfo;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import site.ng_archive.ecom_common.config.EnableCommonTestFixtures;
 import site.ng_archive.ecom_member.domain.deliveryinfo.dto.CreateDeliveryInfoCommand;
 
+@EnableCommonTestFixtures
 @Component
 public class DeliveryInfoTestTemplate {
 
