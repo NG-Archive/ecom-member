@@ -73,7 +73,8 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.16'
 	implementation 'org.mindrot:jbcrypt:0.4'
 	implementation 'com.auth0:java-jwt:4.4.0'
-	compileOnly 'org.projectlombok:lombok'
+    implementation 'site.ng-archive:ecom-common'
+    compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'io.r2dbc:r2dbc-h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -88,5 +89,6 @@ dependencies {
 	testImplementation 'com.epages:restdocs-api-spec:0.17.1'
 	testImplementation 'com.epages:restdocs-api-spec-webtestclient:0.17.1'
 	testImplementation 'net.datafaker:datafaker:2.4.0'
+    testImplementation testFixtures('site.ng-archive:ecom-common')
 }
 
