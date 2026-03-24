@@ -28,7 +28,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @RequireRoles()
+    @RequireRoles
     @GetMapping("/member/{id}")
     public Mono<ReadMemberResponse> readMember(@LoginUser UserContext user, @PathVariable Long id) {
         return Mono.just(user)
