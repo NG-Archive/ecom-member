@@ -237,8 +237,8 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("판매자 회원 가입 (SELLER)")
                         .description("아이디와 패스워드로 판매자 회원가입을 합니다.")
                         .requestFields(
-                            field(CreateUserRequest.class, "name", "회원 이름"),
-                            field(CreateUserRequest.class, "password", "패스워드")
+                            field(CreateSellerRequest.class, "name", "회원 이름"),
+                            field(CreateSellerRequest.class, "password", "패스워드")
                         )
                         .responseFields(
                             field(ErrorResponse.class, "errorCode", "오류 코드"),
