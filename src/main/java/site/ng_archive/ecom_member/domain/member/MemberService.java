@@ -8,7 +8,8 @@ import site.ng_archive.ecom_common.auth.UserContext;
 import site.ng_archive.ecom_common.auth.exception.LoginFailException;
 import site.ng_archive.ecom_common.auth.token.TokenUtil;
 import site.ng_archive.ecom_common.handler.EntityNotFoundException;
-import site.ng_archive.ecom_member.domain.member.dto.CreateMemberCommand;
+import site.ng_archive.ecom_member.domain.member.dto.CreateSellerCommand;
+import site.ng_archive.ecom_member.domain.member.dto.CreateUserCommand;
 import site.ng_archive.ecom_member.domain.member.dto.LoginCommand;
 
 @RequiredArgsConstructor
@@ -17,7 +18,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Mono<Member> createMember(CreateMemberCommand command) {
+    public Mono<Member> createUser(CreateUserCommand command) {
+        String encryptedPw = PasswordManager.encrypt(command.password());
+        return memberRepository.save(command.toEntity(encryptedPw));
+    }
+
+    public Mono<Member> createSeller(CreateSellerCommand command) {
         String encryptedPw = PasswordManager.encrypt(command.password());
         return memberRepository.save(command.toEntity(encryptedPw));
     }

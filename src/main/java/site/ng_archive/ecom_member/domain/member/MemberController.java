@@ -15,11 +15,7 @@ import site.ng_archive.ecom_common.auth.UserContext;
 import site.ng_archive.ecom_common.auth.aspect.LoginUser;
 import site.ng_archive.ecom_common.auth.aspect.RequireRoles;
 import site.ng_archive.ecom_common.auth.exception.ForbiddenException;
-import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
-import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
-import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
-import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
-import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
+import site.ng_archive.ecom_member.domain.member.dto.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,10 +35,17 @@ public class MemberController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/member")
-    public Mono<CreateMemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
-        return memberService.createMember(request.toCommand())
-            .map(CreateMemberResponse::from);
+    @PostMapping("/member/user")
+    public Mono<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        return memberService.createUser(request.toCommand())
+            .map(CreateUserResponse::from);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/member/seller")
+    public Mono<CreateSellerResponse> createSeller(@Valid @RequestBody CreateSellerRequest request) {
+        return memberService.createSeller(request.toCommand())
+            .map(CreateSellerResponse::from);
     }
 
     @PostMapping("/login")
