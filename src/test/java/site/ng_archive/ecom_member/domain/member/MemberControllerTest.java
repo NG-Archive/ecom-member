@@ -18,7 +18,6 @@ import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
 import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
 import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 import static site.ng_archive.ecom_common.util.DocUtils.enumFormat;
@@ -50,7 +49,6 @@ class MemberControllerTest extends AcceptedTest {
                         .tag("Member")
                         .summary("회원 상세 조회")
                         .description("회원 ID를 사용하여 상세 정보를 조회합니다.")
-                        .requestHeaders(headerWithName("Authorization").description("인증 토큰"))
                         .pathParameters(
                             parameterWithName("id").description("회원 아이디")
                         )

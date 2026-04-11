@@ -7,7 +7,6 @@ import io.restassured.http.ContentType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import site.ng_archive.ecom_common.config.AcceptedTest;
@@ -21,7 +20,6 @@ import site.ng_archive.ecom_member.domain.member.MemberTestTemplate;
 
 import java.util.List;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
 
@@ -57,7 +55,6 @@ class DeliveryInfoControllerTest extends AcceptedTest {
                         .tag("DeliveryInfo")
                         .summary("배송정보 생성")
                         .description("회원 ID와 주소로 배송 정보를 저장 합니다.")
-                        .requestHeaders(headerWithName("Authorization").description("인증 토큰"))
                         .requestFields(
                             field(CreateDeliveryInfoRequest.class, "memberId", "회원 아이디"),
                             field(CreateDeliveryInfoRequest.class, "address", "주소")
@@ -100,7 +97,6 @@ class DeliveryInfoControllerTest extends AcceptedTest {
                     .tag("DeliveryInfo")
                     .summary("배송정보 조회")
                     .description("회원 ID와 주소로 배송 정보를 조회 합니다.")
-                    .requestHeaders(headerWithName("Authorization").description("인증 토큰"))
                     .pathParameters(
                         parameterWithName("memberId").description("회원 ID").type(SimpleType.NUMBER),
                         parameterWithName("id").description("배송정보 ID").type(SimpleType.NUMBER)
@@ -140,7 +136,6 @@ class DeliveryInfoControllerTest extends AcceptedTest {
                     .tag("DeliveryInfo")
                     .summary("배송정보 조회")
                     .description("회원 ID와 주소로 배송 정보를 조회 합니다.")
-                    .requestHeaders(headerWithName("Authorization").description("인증 토큰"))
                     .pathParameters(
                         parameterWithName("memberId").description("회원 ID").type(SimpleType.NUMBER),
                         parameterWithName("id").description("배송정보 ID").type(SimpleType.NUMBER)
@@ -183,7 +178,6 @@ class DeliveryInfoControllerTest extends AcceptedTest {
                         .tag("DeliveryInfo")
                         .summary("배송정보 목록조회")
                         .description("회원 ID와 주소로 배송 정보 목록을 조회 합니다.")
-                        .requestHeaders(headerWithName("Authorization").description("인증 토큰"))
                         .pathParameters(
                             parameterWithName("memberId").description("회원 ID").type(SimpleType.NUMBER)
                         )
