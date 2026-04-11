@@ -12,11 +12,7 @@ import site.ng_archive.ecom_common.auth.token.TokenUtil;
 import site.ng_archive.ecom_common.config.AcceptedTest;
 import site.ng_archive.ecom_common.error.ErrorResponse;
 import site.ng_archive.ecom_member.EcomMemberApplication;
-import site.ng_archive.ecom_member.domain.member.dto.CreateMemberRequest;
-import site.ng_archive.ecom_member.domain.member.dto.CreateMemberResponse;
-import site.ng_archive.ecom_member.domain.member.dto.LoginRequest;
-import site.ng_archive.ecom_member.domain.member.dto.LoginResponse;
-import site.ng_archive.ecom_member.domain.member.dto.ReadMemberResponse;
+import site.ng_archive.ecom_member.domain.member.dto.*;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static io.restassured.module.webtestclient.RestAssuredWebTestClient.given;
@@ -138,39 +134,38 @@ class MemberControllerTest extends AcceptedTest {
     }
 
     @Test
-    void 회원가입() {
-        CreateMemberRequest request = new CreateMemberRequest("member", "password");
-        CreateMemberResponse response =
+    void 사용자_회원가입() {
+        CreateUserRequest request = new CreateUserRequest("member", "password");
+        CreateUserResponse response =
             given()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .consumeWith(document(
                     info()
                         .tag("Member")
-                        .summary("회원 가입")
-                        .description("아이디와 패스워드로 회원가입을 합니다.")
+                        .summary("사용자 회원 가입 (USER)")
+                        .description("아이디와 패스워드로 사용자 회원가입을 합니다.")
                         .requestFields(
-                            field(CreateMemberRequest.class, "name", "회원 이름"),
-                            field(CreateMemberRequest.class, "password", "패스워드")
+                            field(CreateUserRequest.class, "name", "회원 이름"),
+                            field(CreateUserRequest.class, "password", "패스워드")
                         )
                         .responseFields(
-                            field(CreateMemberResponse.class, "id", "회원 ID")
+                            field(CreateUserResponse.class, "id", "회원 ID")
                         )
                 ))
-                .post("/member")
+                .post("/member/user")
                 .then()
                 .log().all()
                 .status(HttpStatus.CREATED)
-                .extract().body().as(CreateMemberResponse.class);
+                .extract().body().as(CreateUserResponse.class);
 
         Member member = memberRepository.findById(response.id()).block();
         Assertions.assertThat(member.id()).isEqualTo(response.id());
-
     }
 
     @Test
-    void 회원가입_패스워드오류() {
-        CreateMemberRequest request = new CreateMemberRequest("member", "p");
+    void 사용자_회원가입_패스워드오류() {
+        CreateUserRequest request = new CreateUserRequest("member", "p");
         ErrorResponse response =
             given()
                 .contentType(ContentType.JSON)
@@ -178,18 +173,18 @@ class MemberControllerTest extends AcceptedTest {
                 .consumeWith(document(
                     info()
                         .tag("Member")
-                        .summary("회원 가입")
-                        .description("아이디와 패스워드로 회원가입을 합니다.")
+                        .summary("사용자 회원 가입 (USER)")
+                        .description("아이디와 패스워드로 사용자 회원가입을 합니다.")
                         .requestFields(
-                            field(CreateMemberRequest.class, "name", "회원 이름"),
-                            field(CreateMemberRequest.class, "password", "패스워드")
+                            field(CreateUserRequest.class, "name", "회원 이름"),
+                            field(CreateUserRequest.class, "password", "패스워드")
                         )
                         .responseFields(
                             field(ErrorResponse.class, "errorCode", "오류 코드"),
                             field(ErrorResponse.class, "message", "오류 메시지")
                         )
                 ))
-                .post("/member")
+                .post("/member/user")
                 .then()
                 .log().all()
                 .status(HttpStatus.BAD_REQUEST)
@@ -197,7 +192,67 @@ class MemberControllerTest extends AcceptedTest {
 
         Assertions.assertThat(response.errorCode()).isEqualTo("member.password.size");
         Assertions.assertThat(response.message()).isEqualTo("비밀번호는 4자 이상 20자 이하여야 합니다.");
+    }
 
+    @Test
+    void 판매자_회원가입() {
+        CreateSellerRequest request = new CreateSellerRequest("member", "password");
+        CreateSellerResponse response =
+            given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .consumeWith(document(
+                    info()
+                        .tag("Member")
+                        .summary("판매자 회원 가입 (SELLER)")
+                        .description("아이디와 패스워드로 판매자 회원가입을 합니다.")
+                        .requestFields(
+                            field(CreateSellerRequest.class, "name", "회원 이름"),
+                            field(CreateSellerRequest.class, "password", "패스워드")
+                        )
+                        .responseFields(
+                            field(CreateSellerResponse.class, "id", "회원 ID")
+                        )
+                ))
+                .post("/member/seller")
+                .then()
+                .log().all()
+                .status(HttpStatus.CREATED)
+                .extract().body().as(CreateSellerResponse.class);
+
+        Member member = memberRepository.findById(response.id()).block();
+        Assertions.assertThat(member.id()).isEqualTo(response.id());
+    }
+
+    @Test
+    void 판매자_회원가입_패스워드오류() {
+        CreateUserRequest request = new CreateUserRequest("member", "p");
+        ErrorResponse response =
+            given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .consumeWith(document(
+                    info()
+                        .tag("Member")
+                        .summary("판매자 회원 가입 (SELLER)")
+                        .description("아이디와 패스워드로 판매자 회원가입을 합니다.")
+                        .requestFields(
+                            field(CreateUserRequest.class, "name", "회원 이름"),
+                            field(CreateUserRequest.class, "password", "패스워드")
+                        )
+                        .responseFields(
+                            field(ErrorResponse.class, "errorCode", "오류 코드"),
+                            field(ErrorResponse.class, "message", "오류 메시지")
+                        )
+                ))
+                .post("/member/seller")
+                .then()
+                .log().all()
+                .status(HttpStatus.BAD_REQUEST)
+                .extract().body().as(ErrorResponse.class);
+
+        Assertions.assertThat(response.errorCode()).isEqualTo("member.password.size");
+        Assertions.assertThat(response.message()).isEqualTo("비밀번호는 4자 이상 20자 이하여야 합니다.");
     }
 
     @Test

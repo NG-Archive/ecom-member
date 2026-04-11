@@ -17,7 +17,7 @@ public record Member(
 
         MemberStatus status
 ){
-    public static Member of(String name, String encryptedPassword) {
-        return new Member(null, name, encryptedPassword, Role.USER, MemberStatus.NORMAL);
+    public static Member of(String name, String encryptedPassword, Role role) {
+        return new Member(null, name, encryptedPassword, role, MemberStatus.NORMAL);
     }
 }

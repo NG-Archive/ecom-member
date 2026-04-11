@@ -3,7 +3,7 @@ package site.ng_archive.ecom_member.domain.member.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record CreateMemberRequest(
+public record CreateSellerRequest(
         @Size(min = 1, max = 20, message = "member.username.size")
         @NotBlank(message = "member.username.blank")
         String name,
@@ -12,7 +12,7 @@ public record CreateMemberRequest(
         @NotBlank(message = "member.password.blank")
         String password
 ) {
-    public CreateMemberCommand toCommand() {
-        return new CreateMemberCommand(name, password);
+    public CreateSellerCommand toCommand() {
+        return new CreateSellerCommand(name, password);
     }
 }

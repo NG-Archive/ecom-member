@@ -4,7 +4,7 @@ import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import site.ng_archive.ecom_common.config.EnableCommonTestFixtures;
-import site.ng_archive.ecom_member.domain.member.dto.CreateMemberCommand;
+import site.ng_archive.ecom_member.domain.member.dto.CreateUserCommand;
 import site.ng_archive.ecom_member.domain.member.dto.LoginCommand;
 
 @EnableCommonTestFixtures
@@ -21,13 +21,13 @@ public class MemberTestTemplate {
         String name = getRandomName();
         String password = getRandomPassword();
 
-        CreateMemberCommand command = new CreateMemberCommand(name, password);
-        return memberService.createMember(command).block();
+        CreateUserCommand command = new CreateUserCommand(name, password);
+        return memberService.createUser(command).block();
     }
 
     public Member createMember(String name, String password) {
-        CreateMemberCommand command = new CreateMemberCommand(name, password);
-        return memberService.createMember(command).block();
+        CreateUserCommand command = new CreateUserCommand(name, password);
+        return memberService.createUser(command).block();
     }
 
     public String login(Long id, String password) {
