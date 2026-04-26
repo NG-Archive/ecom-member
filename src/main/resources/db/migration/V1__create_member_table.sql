@@ -5,3 +5,4 @@ CREATE TABLE member (
     role VARCHAR(20) NOT NULL,
     status VARCHAR(20) NOT NULL
 );
+CREATE UNIQUE INDEX idx_member_name ON member(name);

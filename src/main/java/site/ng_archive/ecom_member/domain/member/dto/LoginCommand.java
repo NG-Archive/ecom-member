@@ -1,4 +1,4 @@
 package site.ng_archive.ecom_member.domain.member.dto;
 
-public record LoginCommand(Long id, String password) {
+public record LoginCommand(String name, String password) {
 }

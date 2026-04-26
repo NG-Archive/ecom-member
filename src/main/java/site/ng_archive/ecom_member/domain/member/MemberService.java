@@ -1,6 +1,7 @@
 package site.ng_archive.ecom_member.domain.member;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import site.ng_archive.ecom_common.auth.PasswordManager;
@@ -20,7 +21,10 @@ public class MemberService {
 
     public Mono<Member> createUser(CreateUserCommand command) {
         String encryptedPw = PasswordManager.encrypt(command.password());
-        return memberRepository.save(command.toEntity(encryptedPw));
+
+        return memberRepository.save(command.toEntity(encryptedPw))
+            .onErrorMap(DataIntegrityViolationException.class,
+                e -> new IllegalStateException("member.already.exists"));
     }
 
     public Mono<Member> createSeller(CreateSellerCommand command) {
@@ -35,7 +39,7 @@ public class MemberService {
     }
 
     public Mono<String> login(LoginCommand command) {
-        return memberRepository.findById(command.id())
+        return memberRepository.findByName(command.name())
                 .filter(member -> PasswordManager.check(command.password(), member.password()))
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new LoginFailException("member.login.fail"))))
                 .flatMap(member -> {

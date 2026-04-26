@@ -30,8 +30,8 @@ public class MemberTestTemplate {
         return memberService.createUser(command).block();
     }
 
-    public String login(Long id, String password) {
-        LoginCommand loginCommand = new LoginCommand(id, password);
+    public String login(String name, String password) {
+        LoginCommand loginCommand = new LoginCommand(name, password);
         return memberService.login(loginCommand).block();
     }
 

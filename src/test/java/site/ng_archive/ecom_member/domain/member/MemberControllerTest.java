@@ -33,7 +33,7 @@ class MemberControllerTest extends AcceptedTest {
         String name = memberTestTemplate.getRandomName();
         String password = memberTestTemplate.getRandomPassword();
         Member member = memberTestTemplate.createMember(name, password);
-        String token = memberTestTemplate.login(member.id(), password);
+        String token = memberTestTemplate.login(member.name(), password);
 
         ReadMemberResponse response =
             given()
@@ -69,7 +69,7 @@ class MemberControllerTest extends AcceptedTest {
         String name = memberTestTemplate.getRandomName();
         String password = memberTestTemplate.getRandomPassword();
         Member member = memberTestTemplate.createMember(name, password);
-        String token = memberTestTemplate.login(member.id(), password);
+        String token = memberTestTemplate.login(member.name(), password);
 
         ErrorResponse response =
             given()
@@ -135,7 +135,9 @@ class MemberControllerTest extends AcceptedTest {
 
     @Test
     void 사용자_회원가입() {
-        CreateUserRequest request = new CreateUserRequest("member", "password");
+        String name = memberTestTemplate.getRandomName();
+        String password = memberTestTemplate.getRandomPassword();
+        CreateUserRequest request = new CreateUserRequest(name, password);
         CreateUserResponse response =
             given()
                 .contentType(ContentType.JSON)
@@ -192,6 +194,41 @@ class MemberControllerTest extends AcceptedTest {
 
         Assertions.assertThat(response.errorCode()).isEqualTo("member.password.size");
         Assertions.assertThat(response.message()).isEqualTo("비밀번호는 4자 이상 20자 이하여야 합니다.");
+    }
+
+    @Test
+    void 사용자_회원가입_중복회원명() {
+        String name = memberTestTemplate.getRandomName();
+        String password = memberTestTemplate.getRandomPassword();
+        memberTestTemplate.createMember(name, password);
+
+        CreateUserRequest request = new CreateUserRequest(name, password);
+        ErrorResponse response =
+            given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .consumeWith(document(
+                    info()
+                        .tag("Member")
+                        .summary("사용자 회원 가입 (USER)")
+                        .description("이미 존재하는 회원명으로 회원가입을 시도합니다.")
+                        .requestFields(
+                            field(CreateUserRequest.class, "name", "회원 이름"),
+                            field(CreateUserRequest.class, "password", "패스워드")
+                        )
+                        .responseFields(
+                            field(ErrorResponse.class, "errorCode", "오류 코드"),
+                            field(ErrorResponse.class, "message", "오류 메시지")
+                        )
+                ))
+                .post("/member/user")
+                .then()
+                .log().all()
+                .status(HttpStatus.BAD_REQUEST)
+                .extract().body().as(ErrorResponse.class);
+
+        Assertions.assertThat(response.errorCode()).isEqualTo("member.already.exists");
+        Assertions.assertThat(response.message()).isEqualTo("이미 존재하는 회원명입니다.");
     }
 
     @Test
@@ -257,9 +294,11 @@ class MemberControllerTest extends AcceptedTest {
 
     @Test
     void 로그인() {
-        String password = "password";
-        Member exist = memberTestTemplate.createMember("name", password);
-        LoginRequest request = new LoginRequest(exist.id(), password);
+        String name = memberTestTemplate.getRandomName();
+        String password = memberTestTemplate.getRandomPassword();
+        Member exist = memberTestTemplate.createMember(name, password);
+
+        LoginRequest request = new LoginRequest(exist.name(), password);
         LoginResponse response =
             given()
                 .contentType(ContentType.JSON)
@@ -270,7 +309,7 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("로그인")
                         .description("아이디와 패스워드로 로그인을 합니다. 응답값은 토큰입니다.")
                         .requestFields(
-                            field(LoginRequest.class, "id", "회원 ID"),
+                            field(LoginRequest.class, "name", "회원 이름"),
                             field(LoginRequest.class, "password", "패스워드")
                         )
                         .responseFields(
@@ -291,7 +330,7 @@ class MemberControllerTest extends AcceptedTest {
     void 로그인_실패() {
         String password = "password";
         Member exist = memberTestTemplate.createMember("name", password);
-        LoginRequest request = new LoginRequest(exist.id(), password + "fail");
+        LoginRequest request = new LoginRequest(exist.name(), password + "fail");
         ErrorResponse response =
             given()
                 .contentType(ContentType.JSON)
@@ -302,7 +341,7 @@ class MemberControllerTest extends AcceptedTest {
                         .summary("로그인")
                         .description("아이디와 패스워드로 로그인을 시도하며, 인증 실패 시 오류 응답을 반환합니다.")
                         .requestFields(
-                            field(LoginRequest.class, "id", "회원 ID"),
+                            field(LoginRequest.class, "name", "회원 이름"),
                             field(LoginRequest.class, "password", "패스워드")
                         )
                         .responseFields(
