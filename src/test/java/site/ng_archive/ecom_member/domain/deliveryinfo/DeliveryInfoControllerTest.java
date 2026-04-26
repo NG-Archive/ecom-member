@@ -40,7 +40,7 @@ class DeliveryInfoControllerTest extends AcceptedTest {
         String name = memberTestTemplate.getRandomName();
         String password = memberTestTemplate.getRandomPassword();
         Member member = memberTestTemplate.createMember(name, password);
-        String token = memberTestTemplate.login(member.id(), password);
+        String token = memberTestTemplate.login(member.name(), password);
 
         String address = deliveryInfoTestTemplate.randomAddress();
         CreateDeliveryInfoRequest request = new CreateDeliveryInfoRequest(member.id(), address);
@@ -81,7 +81,7 @@ class DeliveryInfoControllerTest extends AcceptedTest {
         String name = memberTestTemplate.getRandomName();
         String password = memberTestTemplate.getRandomPassword();
         Member member = memberTestTemplate.createMember(name, password);
-        String token = memberTestTemplate.login(member.id(), password);
+        String token = memberTestTemplate.login(member.name(), password);
 
         String address = deliveryInfoTestTemplate.randomAddress();
         DeliveryInfo exists = deliveryInfoTestTemplate.createDeliveryInfo(member.id(), address);
@@ -123,7 +123,7 @@ class DeliveryInfoControllerTest extends AcceptedTest {
         String name = memberTestTemplate.getRandomName();
         String password = memberTestTemplate.getRandomPassword();
         Member member = memberTestTemplate.createMember(name, password);
-        String token = memberTestTemplate.login(member.id(), password);
+        String token = memberTestTemplate.login(member.name(), password);
 
         ErrorResponse response =
         given()
@@ -162,7 +162,7 @@ class DeliveryInfoControllerTest extends AcceptedTest {
         String password = memberTestTemplate.getRandomPassword();
         Member member = memberTestTemplate.createMember(name, password);
         Long memberId = member.id();
-        String token = memberTestTemplate.login(member.id(), password);
+        String token = memberTestTemplate.login(member.name(), password);
 
         deliveryInfoTestTemplate.createDeliveryInfo(memberId, deliveryInfoTestTemplate.randomAddress());
         deliveryInfoTestTemplate.createDeliveryInfo(memberId, deliveryInfoTestTemplate.randomAddress());
