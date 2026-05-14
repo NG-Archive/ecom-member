@@ -41,6 +41,22 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build --stacktrace
 
+      # tailscale 연결
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          args: --exit-node=${{secrets.TS_EXIT_NODE_IP}}
+
+      # 레지스트리 insecure 등록
+      - name: Configure Docker for Insecure Registry
+        run: |
+          sudo mkdir -p /etc/docker
+          echo '{ "insecure-registries": ["${{ secrets.REGISTRY_URL }}"] }' | sudo tee /etc/docker/daemon.json
+          sudo systemctl restart docker
+
       # Docker Login
       - name: Log in to Private Registry
         uses: docker/login-action@v4
@@ -57,13 +73,13 @@ jobs:
           docker build -f Dockerfile.prod -t ${{ secrets.REGISTRY_URL }}/$APP_NAME:$IMAGE_TAG .
           docker push ${{ secrets.REGISTRY_URL }}/$APP_NAME:$IMAGE_TAG
 
-      # 3. K3s 접속 설정
+      # K3s 접속 설정
       - name: Set up Kubeconfig
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBECONFIG_64 }}" | base64 -d > ~/.kube/config
 
-      # 4. K3s에 배포
+      # K3s에 배포
       - name: Deploy to K3s
         run: |
           kubectl rollout restart deployment/ecom-member-api
